@@ -6,6 +6,7 @@ import PostRoutes from "./routes/PostRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import commentRoutes from "./routes/commentRoutes.js";
+import messageRoutes from "./routes/messsageRoutes.js";
 dotenv.config();
 const app = express();
 
@@ -21,6 +22,8 @@ app.use("/api/posts", PostRoutes);
 
 app.use("/api/users", userRoutes);
 
+
+app.use("/api/messages", messageRoutes);
 app.use("/api/comments", commentRoutes);// comments
 
 // Health check

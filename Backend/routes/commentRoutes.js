@@ -4,65 +4,129 @@ import Comment from "../models/comments.js";
 
 const router = express.Router();
 
-// Add Comment
+/* ===========================
+   ADD COMMENT
+=========================== */
 router.post("/:postId", verifyToken, async (req, res) => {
   try {
+    const { text } = req.body;
+    if (!text) {
+      return res.status(400).json({ success: false, message: "Comment text is required ❌" });
+    }
+
     const comment = new Comment({
       postId: req.params.postId,
       userId: req.user.id || req.user._id,
-      text: req.body.text,
+      text,
     });
+
     const savedComment = await comment.save();
-    res.status(201).json(savedComment);
+
+    res.status(201).json({
+      success: true,
+      message: "Comment added successfully 💬",
+      comment: savedComment,
+    });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Add comment error:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server error while adding comment",
+      error: err.message,
+    });
   }
 });
 
-// Get Comments of a Post
+/* ===========================
+   GET COMMENTS FOR A POST
+=========================== */
 router.get("/:postId", async (req, res) => {
   try {
     const comments = await Comment.find({ postId: req.params.postId })
       .populate("userId", "username email")
       .sort({ createdAt: -1 });
-    res.json(comments);
+
+    res.status(200).json({
+      success: true,
+      count: comments.length,
+      message: "Comments fetched successfully ✅",
+      comments,
+    });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Get comments error:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server error while fetching comments",
+      error: err.message,
+    });
   }
 });
 
-// Update Comment
+/* ===========================
+   UPDATE COMMENT
+=========================== */
 router.put("/:id", verifyToken, async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.id);
-    if (!comment) return res.status(404).json({ error: "Comment not found" });
+    if (!comment)
+      return res.status(404).json({ success: false, message: "Comment not found ❌" });
 
+    // Authorization check
     if (comment.userId.toString() !== (req.user.id || req.user._id)) {
-      return res.status(403).json({ error: "Not authorized" });
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to update this comment ⚠️",
+      });
     }
 
     comment.text = req.body.text || comment.text;
-    const updated = await comment.save();
-    res.json(updated);
+    const updatedComment = await comment.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Comment updated successfully ✏️",
+      comment: updatedComment,
+    });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Update comment error:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server error while updating comment",
+      error: err.message,
+    });
   }
 });
 
-// Delete Comment
+/* ===========================
+   DELETE COMMENT
+=========================== */
 router.delete("/:id", verifyToken, async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.id);
-    if (!comment) return res.status(404).json({ error: "Comment not found" });
+    if (!comment)
+      return res.status(404).json({ success: false, message: "Comment not found ❌" });
 
+    // Authorization check
     if (comment.userId.toString() !== (req.user.id || req.user._id)) {
-      return res.status(403).json({ error: "Not authorized" });
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to delete this comment ⚠️",
+      });
     }
 
     await comment.deleteOne();
-    res.json({ message: "Comment deleted" });
+
+    res.status(200).json({
+      success: true,
+      message: "Comment deleted successfully 🗑️",
+    });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Delete comment error:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server error while deleting comment",
+      error: err.message,
+    });
   }
 });
 
