@@ -1,12 +1,43 @@
 import mongoose from "mongoose";
 
-const NotificationSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  type: { type: String, enum: ["like","comment","follow"], required: true },
-  fromUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  post: { type: mongoose.Schema.Types.ObjectId, ref: "Post" },
-  read: { type: Boolean, default: false },
-  createdAt: { type: Date, default: Date.now }
-});
+const { Schema, model, Types } = mongoose;
 
-export default mongoose.model("Notification", NotificationSchema);
+const NotificationSchema = new Schema(
+  {
+    user: {
+      type: Types.ObjectId,
+      ref: "User",
+      required: [true, "User ID is required"],
+      index: true, // speeds up fetching notifications for a user
+    },
+    type: {
+      type: String,
+      enum: ["like", "comment", "follow"],
+      required: [true, "Notification type is required"],
+    },
+    fromUser: {
+      type: Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
+    post: {
+      type: Types.ObjectId,
+      ref: "Post",
+      default: null,
+    },
+    read: {
+      type: Boolean,
+      default: false,
+      index: true, // optional: helps quickly fetch unread notifications
+    },
+  },
+  {
+    timestamps: true, // automatically adds createdAt & updatedAt
+    versionKey: false,
+  }
+);
+
+// Optional: compound index for fetching unread notifications efficiently
+NotificationSchema.index({ user: 1, read: 1, createdAt: -1 });
+
+export default model("Notification", NotificationSchema);

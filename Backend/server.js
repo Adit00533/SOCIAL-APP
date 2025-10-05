@@ -21,7 +21,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/posts", PostRoutes);
 
 app.use("/api/users", userRoutes);
-
+app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
 
 app.use("/api/messages", messageRoutes);
 app.use("/api/comments", commentRoutes);// comments

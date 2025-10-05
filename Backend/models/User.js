@@ -1,16 +1,65 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema(
+const { Schema, model, Types } = mongoose;
+
+const userSchema = new Schema(
   {
-    name: { type: String, required: false },
-    username: { type: String, required: true, unique: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    bio: { type: String, default: "" },
-    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-    following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }]
+    name: {
+      type: String,
+      trim: true,
+      maxlength: [50, "Name cannot exceed 50 characters"],
+      default: "",
+    },
+    username: {
+      type: String,
+      required: [true, "Username is required"],
+      unique: true,
+      trim: true,
+      lowercase: true,
+      index: true, // speeds up lookups by username
+    },
+    email: {
+      type: String,
+      required: [true, "Email is required"],
+      unique: true,
+      trim: true,
+      lowercase: true,
+      match: [/.+@.+\..+/, "Please enter a valid email"], // basic email validation
+      index: true, // speeds up lookups by email
+    },
+    password: {
+      type: String,
+      required: [true, "Password is required"],
+    },
+    bio: {
+      type: String,
+      default: "",
+      trim: true,
+      maxlength: [160, "Bio cannot exceed 160 characters"], // like Twitter
+    },
+    followers: [
+      {
+        type: Types.ObjectId,
+        ref: "User",
+        default: [],
+      },
+    ],
+    following: [
+      {
+        type: Types.ObjectId,
+        ref: "User",
+        default: [],
+      },
+    ],
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    versionKey: false, // remove __v field
+  }
 );
 
-export default mongoose.model("User", userSchema);
+// Optional: index for fast queries on followers/following
+userSchema.index({ username: 1 });
+userSchema.index({ email: 1 });
+
+export default model("User", userSchema);
