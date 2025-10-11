@@ -1,24 +1,29 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Home from "./Pages/Home";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
-import Feed from "./Pages/Feed";
-import Profile from "./Pages/Profile";
 import Messages from "./Pages/Messages";
-import Notifications from "./Pages/Notifications";
+import Profile from "./Pages/Profile";
+import NotificationsPage from "./Pages/Notifications";
+import { AuthProvider } from "./context/AuthContext";
 
-function App() {
+export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/" element={<Feed />} />
-        <Route path="/profile/:id" element={<Profile />} />
-        <Route path="/messages" element={<Messages />} />
-        <Route path="/notifications" element={<Notifications />} />
-      </Routes>
-    </BrowserRouter>
+    <Router> {/* ✅ Router MUST wrap everything that uses navigation */}
+      <AuthProvider>
+        <Navbar /> {/* ✅ Navbar is now inside Router */}
+        <div className="bg-gray-100 min-h-screen p-4">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/messages" element={<Messages />} />
+            <Route path="/profile/:id" element={<Profile />} />
+            <Route path="/notifications" element={<NotificationsPage />} />
+          </Routes>
+        </div>
+      </AuthProvider>
+    </Router>
   );
 }
-
-export default App;
