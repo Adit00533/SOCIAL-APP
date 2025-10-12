@@ -1,4 +1,3 @@
-import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -7,6 +6,13 @@ import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import commentRoutes from "./routes/commentRoutes.js";
 import messageRoutes from "./routes/messsageRoutes.js";
+import path from "path";
+import fs from "fs";
+import express from "express";
+
+const uploadDir = "uploads";
+
+if (!fs.existsSync(uploadDir)) { fs.mkdirSync(uploadDir, { recursive: true }); }
 dotenv.config();
 const app = express();
 

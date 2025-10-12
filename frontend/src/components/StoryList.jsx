@@ -33,7 +33,7 @@ export default function StoryList() {
         img: reader.result,
       };
 
-      setStories([newStory, ...stories]); // Add new story to the beginning
+      setStories([newStory, ...stories]);
       setNewName("");
       setNewImageFile(null);
       setShowAddModal(false);
@@ -45,16 +45,37 @@ export default function StoryList() {
   return (
     <>
       {/* Story Bar */}
-      <div className="flex gap-3 overflow-x-auto p-3 bg-white rounded-lg shadow-sm m-0">
+      <div 
+        className="flex gap-4 overflow-x-auto p-4 rounded-2xl shadow-2xl"
+        style={{
+          background: "rgba(26, 26, 46, 0.7)",
+          backdropFilter: "blur(20px)",
+          border: "1px solid rgba(255, 255, 255, 0.1)",
+          scrollbarWidth: "thin",
+          scrollbarColor: "rgba(124, 58, 237, 0.5) rgba(255, 255, 255, 0.1)",
+        }}
+      >
         {/* Add Your Story Circle */}
         <div
           onClick={() => setShowAddModal(true)}
-          className="flex flex-col items-center justify-center cursor-pointer transition hover:scale-105"
+          className="flex flex-col items-center justify-center cursor-pointer transition-all duration-300 hover:scale-110 flex-shrink-0"
         >
-          <div className="w-16 h-16 rounded-full border-4 border-dashed border-indigo-400 flex items-center justify-center text-indigo-500 text-3xl font-bold bg-gray-100">
+          <div 
+            className="w-16 h-16 rounded-full border-4 border-dashed flex items-center justify-center text-3xl font-bold"
+            style={{
+              borderColor: "rgba(167, 139, 250, 0.5)",
+              background: "rgba(167, 139, 250, 0.1)",
+              color: "#a78bfa",
+            }}
+          >
             +
           </div>
-          <p className="text-xs mt-1 text-indigo-600 font-semibold">You</p>
+          <p 
+            className="text-xs mt-2 font-semibold"
+            style={{ color: "#a78bfa" }}
+          >
+            You
+          </p>
         </div>
 
         {/* Existing Stories */}
@@ -62,56 +83,143 @@ export default function StoryList() {
           <div
             key={s.id}
             onClick={() => setSelectedStory(s)}
-            className="flex flex-col items-center cursor-pointer transition hover:scale-105"
+            className="flex flex-col items-center cursor-pointer transition-all duration-300 hover:scale-110 flex-shrink-0"
           >
             <img
               src={s.img}
               alt={s.name}
-              className="w-16 h-16 rounded-full border-4 border-indigo-500 object-cover"
+              className="w-16 h-16 rounded-full object-cover border-4"
+              style={{
+                borderColor: "#7c3aed",
+                boxShadow: "0 4px 15px rgba(124, 58, 237, 0.4)",
+              }}
             />
-            <p className="text-xs mt-1">{s.name}</p>
+            <p 
+              className="text-xs mt-2"
+              style={{ color: "#d4d4d8" }}
+            >
+              {s.name}
+            </p>
           </div>
         ))}
       </div>
 
       {/* Add Story Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm relative">
+        <div 
+          className="fixed inset-0 flex items-center justify-center z-50"
+          style={{
+            background: "rgba(0, 0, 0, 0.8)",
+            backdropFilter: "blur(8px)",
+          }}
+        >
+          <div 
+            className="p-8 rounded-2xl shadow-2xl w-full max-w-sm relative"
+            style={{
+              background: "rgba(26, 26, 46, 0.95)",
+              backdropFilter: "blur(20px)",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+            }}
+          >
             <button
               onClick={() => setShowAddModal(false)}
-              className="absolute top-2 right-2 text-gray-600 hover:text-black text-xl"
+              className="absolute top-3 right-3 text-xl font-bold transition-all duration-300 rounded-full w-8 h-8 flex items-center justify-center"
+              style={{
+                color: "#d4d4d8",
+                background: "rgba(255, 255, 255, 0.05)",
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = "rgba(239, 68, 68, 0.2)";
+                e.target.style.color = "#ef4444";
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = "rgba(255, 255, 255, 0.05)";
+                e.target.style.color = "#d4d4d8";
+              }}
             >
               ✕
             </button>
 
-            <h2 className="text-lg font-semibold mb-4 text-center">Add Your Story</h2>
+            <h2 
+              className="text-2xl font-bold mb-6 text-center"
+              style={{
+                background: "linear-gradient(135deg, #a78bfa 0%, #818cf8 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              Add Your Story
+            </h2>
 
             <input
               type="text"
               placeholder="Your name"
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
-              className="block w-full mb-3 p-2 border rounded"
+              className="block w-full mb-4 p-3 rounded-xl transition-all duration-300 focus:outline-none"
+              style={{
+                background: "rgba(255, 255, 255, 0.05)",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+                color: "#e4e4e7",
+              }}
+              onFocus={(e) => {
+                e.target.style.background = "rgba(255, 255, 255, 0.08)";
+                e.target.style.borderColor = "#7c3aed";
+                e.target.style.boxShadow = "0 0 0 3px rgba(124, 58, 237, 0.2)";
+              }}
+              onBlur={(e) => {
+                e.target.style.background = "rgba(255, 255, 255, 0.05)";
+                e.target.style.borderColor = "rgba(255, 255, 255, 0.1)";
+                e.target.style.boxShadow = "none";
+              }}
             />
 
             <input
               type="file"
               accept="image/*"
               onChange={handleImageUpload}
-              className="block w-full mb-3 p-2 border rounded bg-white"
+              className="block w-full mb-4 p-3 rounded-xl transition-all duration-300"
+              style={{
+                background: "rgba(255, 255, 255, 0.05)",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+                color: "#d4d4d8",
+              }}
             />
 
-            <div className="flex justify-end gap-2">
+            <div className="flex justify-end gap-3">
               <button
                 onClick={handleAddStory}
-                className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                className="px-5 py-2.5 rounded-xl font-semibold text-white transition-all duration-300"
+                style={{
+                  background: "linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)",
+                  boxShadow: "0 4px 15px rgba(124, 58, 237, 0.4)",
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = "translateY(-2px)";
+                  e.target.style.boxShadow = "0 6px 20px rgba(124, 58, 237, 0.5)";
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = "translateY(0)";
+                  e.target.style.boxShadow = "0 4px 15px rgba(124, 58, 237, 0.4)";
+                }}
               >
                 Submit
               </button>
               <button
                 onClick={() => setShowAddModal(false)}
-                className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+                className="px-5 py-2.5 rounded-xl font-semibold transition-all duration-300"
+                style={{
+                  background: "rgba(255, 255, 255, 0.05)",
+                  color: "#d4d4d8",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = "rgba(255, 255, 255, 0.1)";
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = "rgba(255, 255, 255, 0.05)";
+                }}
               >
                 Cancel
               </button>
@@ -124,6 +232,23 @@ export default function StoryList() {
       {selectedStory && (
         <StoryModal story={selectedStory} onClose={() => setSelectedStory(null)} />
       )}
+
+      <style>{`
+        div::-webkit-scrollbar {
+          height: 6px;
+        }
+        div::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 10px;
+        }
+        div::-webkit-scrollbar-thumb {
+          background: rgba(124, 58, 237, 0.5);
+          border-radius: 10px;
+        }
+        div::-webkit-scrollbar-thumb:hover {
+          background: rgba(124, 58, 237, 0.7);
+        }
+      `}</style>
     </>
   );
 }
