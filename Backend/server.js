@@ -1,45 +1,50 @@
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
-import PostRoutes from "./routes/PostRoutes.js";
-import authRoutes from "./routes/authRoutes.js";
-import userRoutes from "./routes/userRoutes.js";
-import commentRoutes from "./routes/commentRoutes.js";
-import messageRoutes from "./routes/messsageRoutes.js";
 import path from "path";
-import fs from "fs";
-import express from "express";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 
-const uploadDir = "uploads";
+import PostRoutes from "./routes/Post.js";
+import authRoutes from "./routes/login.js";
+import userRoutes from "./routes/users.js";        // fixed to users.js
+import commentRoutes from "./routes/comment.js";
+import messageRoutes from "./routes/message.js";
+import profileRoutes from "./routes/profile.js";
 
-if (!fs.existsSync(uploadDir)) { fs.mkdirSync(uploadDir, { recursive: true }); }
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 dotenv.config();
+
 const app = express();
 
-// Middleware
 app.use(cors());
-app.use(express.json()); // MUST come before routes
-app.use("/uploads", express.static("uploads"));
+app.use(express.json());
 
-// Routes
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 app.use("/api/auth", authRoutes);
-
 app.use("/api/posts", PostRoutes);
-
 app.use("/api/users", userRoutes);
-app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
-
 app.use("/api/messages", messageRoutes);
-app.use("/api/comments", commentRoutes);// comments
+app.use("/api/comments", commentRoutes);
+app.use("/api/profile", profileRoutes);
 
-// Health check
 app.get("/api/health", (req, res) => {
   res.json({ status: "Backend is running ✅" });
 });
 
-// MongoDB connection
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB connected ✅"))
-  .catch(err => console.error(err));
+const PORT = process.env.PORT || 5000;
 
-app.listen(5000, () => console.log("Server running on port 5000 🚀"));
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("MongoDB connected ✅");
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT} 🚀`);
+    });
+  })
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+    process.exit(1);
+  });
