@@ -15,21 +15,69 @@ const Stories = () => {
   ];
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-3 rounded-2xl shadow-md mb-4">
-      <h2 className="font-semibold mb-2 text-gray-800 dark:text-white">Stories</h2>
-      <div className="flex space-x-3 overflow-x-auto scrollbar-hide">
+    <div 
+      className="p-4 rounded-2xl shadow-2xl mb-4 transition-all duration-300 hover:shadow-purple-900/30"
+      style={{
+        background: "rgba(26, 26, 46, 0.7)",
+        backdropFilter: "blur(20px)",
+        border: "1px solid rgba(255, 255, 255, 0.1)",
+      }}
+    >
+      <h2 
+        className="font-bold mb-3 text-lg"
+        style={{
+          background: "linear-gradient(135deg, #a78bfa 0%, #818cf8 100%)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          backgroundClip: "text",
+        }}
+      >
+        Stories
+      </h2>
+      
+      <div 
+        className="flex space-x-4 overflow-x-auto pb-2"
+        style={{
+          scrollbarWidth: "thin",
+          scrollbarColor: "rgba(124, 58, 237, 0.5) rgba(255, 255, 255, 0.1)",
+        }}
+      >
         {stories.map((story) => (
           <div
             key={story.id}
             onClick={() => setSelectedStory(story)}
-            className="flex-shrink-0 flex flex-col items-center cursor-pointer"
+            className="flex-shrink-0 flex flex-col items-center cursor-pointer group"
           >
-            <img
-              src={story.image}
-              alt={story.name}
-              className="w-16 h-16 rounded-full border-4 border-blue-500 object-cover hover:scale-105 transition-transform"
-            />
-            <p className="text-xs text-gray-700 dark:text-gray-300 mt-1">{story.name}</p>
+            <div 
+              className="relative transition-all duration-300 group-hover:scale-110"
+              style={{
+                padding: "3px",
+                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                borderRadius: "50%",
+                boxShadow: "0 4px 15px rgba(102, 126, 234, 0.4)",
+              }}
+            >
+              <img
+                src={story.image}
+                alt={story.name}
+                className="w-16 h-16 rounded-full object-cover"
+                style={{
+                  border: "2px solid rgba(26, 26, 46, 0.9)",
+                }}
+              />
+            </div>
+            <p 
+              className="text-xs mt-2 text-center transition-colors duration-300"
+              style={{ 
+                color: "#d4d4d8",
+                maxWidth: "70px",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap"
+              }}
+            >
+              {story.name}
+            </p>
           </div>
         ))}
       </div>
@@ -37,21 +85,65 @@ const Stories = () => {
       {/* Story Popup */}
       {selectedStory && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
+          className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm"
+          style={{
+            background: "rgba(0, 0, 0, 0.85)",
+          }}
           onClick={() => setSelectedStory(null)}
         >
-          <div className="relative">
+          <div 
+            className="relative transition-all duration-300 hover:scale-105"
+            onClick={(e) => e.stopPropagation()}
+          >
             <img
               src={selectedStory.image}
               alt={selectedStory.name}
-              className="w-[350px] h-[500px] object-cover rounded-2xl shadow-lg"
+              className="w-[350px] h-[500px] object-cover rounded-2xl shadow-2xl"
+              style={{
+                border: "2px solid rgba(255, 255, 255, 0.1)",
+                boxShadow: "0 20px 60px rgba(0, 0, 0, 0.8)",
+              }}
             />
-            <p className="absolute bottom-4 left-0 right-0 text-center text-white text-lg font-semibold bg-black/40 p-2 rounded-b-2xl">
+            <div 
+              className="absolute bottom-0 left-0 right-0 text-center text-white text-lg font-semibold p-4 rounded-b-2xl"
+              style={{
+                background: "linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 50%, transparent 100%)",
+              }}
+            >
               {selectedStory.name}
-            </p>
+            </div>
+            <button
+              onClick={() => setSelectedStory(null)}
+              className="absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center text-white font-bold transition-all duration-300 hover:scale-110"
+              style={{
+                background: "rgba(0, 0, 0, 0.6)",
+                backdropFilter: "blur(10px)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+              }}
+            >
+              ✕
+            </button>
           </div>
         </div>
       )}
+
+      <style>{`
+        /* Custom scrollbar for stories */
+        div::-webkit-scrollbar {
+          height: 6px;
+        }
+        div::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 10px;
+        }
+        div::-webkit-scrollbar-thumb {
+          background: rgba(124, 58, 237, 0.5);
+          border-radius: 10px;
+        }
+        div::-webkit-scrollbar-thumb:hover {
+          background: rgba(124, 58, 237, 0.7);
+        }
+      `}</style>
     </div>
   );
 };
